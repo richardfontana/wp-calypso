@@ -13,7 +13,7 @@ module.exports = {
 	roots: [ '<rootDir>/server/' ],
 	testEnvironment: 'node',
 	transformIgnorePatterns: [ 'node_modules[\\/\\\\](?!redux-form)' ],
-	testMatch: [ '<rootDir>/server/**/test/*.js?(x)' ],
+	testMatch: [ '<rootDir>/server/**/test/*.js?(x)', '!**/.eslintrc.*' ],
 	timers: 'fake',
 	setupTestFrameworkScriptFile: '<rootDir>/test/server/setup-test-framework.js',
 	verbose: false,

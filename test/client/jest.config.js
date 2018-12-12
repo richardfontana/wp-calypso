@@ -15,7 +15,7 @@ module.exports = {
 	transformIgnorePatterns: [
 		'node_modules[\\/\\\\](?!flag-icon-css|redux-form|simple-html-tokenizer)',
 	],
-	testMatch: [ '<rootDir>/client/**/test/*.js?(x)' ],
+	testMatch: [ '<rootDir>/client/**/test/*.js?(x)', '!**/.eslintrc.*' ],
 	testURL: 'https://example.com',
 	setupTestFrameworkScriptFile: '<rootDir>/test/client/setup-test-framework.js',
 	verbose: false,
