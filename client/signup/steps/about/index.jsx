@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { localize } from 'i18n-calypso';
 import { connect } from 'react-redux';
-import { invoke, noop, includes } from 'lodash';
+import { invoke, noop, findKey, includes, get } from 'lodash';
 import classNames from 'classnames';
 
 /**
@@ -30,7 +30,7 @@ import { isValidLandingPageVertical } from 'lib/signup/verticals';
 import { DESIGN_TYPE_STORE } from 'signup/constants';
 import PressableStoreStep from '../design-type-with-store/pressable-store';
 import { abtest } from 'lib/abtest';
-import { isUserLoggedIn } from 'state/current-user/selectors';
+import { isUserLoggedIn, getCurrentUser } from 'state/current-user/selectors';
 import { getSiteTypePropertyValue } from 'lib/signup/site-type';
 
 //Form components
@@ -549,11 +549,27 @@ class AboutStep extends Component {
 	}
 
 	render() {
-		const { flowName, positionInFlow, signupProgress, stepName, translate } = this.props;
+		const {
+			flowName,
+			positionInFlow,
+			signupProgress,
+			stepName,
+			translate,
+			hasMultipleSites,
+		} = this.props;
 		const headerText = translate( 'Let’s create a site.' );
 		const subHeaderText = translate(
 			'Please answer these questions so we can help you make the site you need.'
 		);
+
+		let allowBackFirstStep = false;
+		let backUrl;
+
+		//If we're starting a new site from an existing account, allow users to go back.
+		if ( hasMultipleSites ) {
+			allowBackFirstStep = true;
+			backUrl = '/';
+		}
 
 		return (
 			<StepWrapper
@@ -566,6 +582,8 @@ class AboutStep extends Component {
 				fallbackSubHeaderText={ subHeaderText }
 				signupProgress={ signupProgress }
 				stepContent={ this.renderContent() }
+				allowBackFirstStep={ allowBackFirstStep }
+				backUrl={ backUrl }
 			/>
 		);
 	}
@@ -587,6 +605,7 @@ export default connect(
 			includes( ownProps.steps, 'site-type' ) &&
 			includes( ownProps.steps, 'site-topic' ) &&
 			includes( ownProps.steps, 'site-information' ),
+		hasMultipleSites: get( getCurrentUser( state ), 'site_count', 1 ) > 0,
 	} ),
 	{
 		setSiteTitle,
