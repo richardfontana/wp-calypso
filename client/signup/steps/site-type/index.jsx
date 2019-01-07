@@ -136,7 +136,7 @@ class SiteType extends Component {
 export default connect(
 	state => ( {
 		siteType: getSiteType( state ),
-		hasMultipleSites: get( getCurrentUser( state ), 'site_count', 1 ) >= 1,
+		hasMultipleSites: get( getCurrentUser( state ), 'site_count', 0 ) >= 1,
 	} ),
 	( dispatch, ownProps ) => ( {
 		submitStep: siteTypeValue => {
