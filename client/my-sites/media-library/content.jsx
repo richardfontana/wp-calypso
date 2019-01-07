@@ -135,6 +135,9 @@ class MediaLibraryContent extends React.Component {
 						i18nOptions
 					);
 					break;
+				case MediaValidationErrors.SERVICE_AUTH_FAILED:
+					return this.getPicasaUpgradeNotice( errorType );
+
 				case MediaValidationErrors.SERVICE_FAILED:
 					message = translate( 'We are unable to retrieve your full media library.' );
 					tryAgain = true;
@@ -155,6 +158,15 @@ class MediaLibraryContent extends React.Component {
 				</Notice>
 			);
 		} );
+	}
+
+	getPicasaUpgradeNotice( errorType ) {
+		const { translate } = this.props;
+		const message = translate(
+			'We are moving to a new and faster Google Photos service. Please reconnect to continue accessing your photos.'
+		);
+
+		return <Notice key={ errorType } status="is-warning" showDismiss={ false } text={ message } />;
 	}
 
 	renderTryAgain() {
