@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import { localize } from 'i18n-calypso';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { get } from 'lodash';
 
 /**
  * Internal dependencies
@@ -17,7 +16,7 @@ import { submitSiteType } from 'state/signup/steps/site-type/actions';
 import { getSiteType } from 'state/signup/steps/site-type/selectors';
 import { allSiteTypes, getSiteTypePropertyValue } from 'lib/signup/site-type';
 import { recordTracksEvent } from 'state/analytics/actions';
-import { getCurrentUser } from 'state/current-user/selectors';
+import hasInitializedSites from 'state/selectors/has-initialized-sites';
 
 //Form components
 import Card from 'components/card';
@@ -99,20 +98,11 @@ class SiteType extends Component {
 			signupProgress,
 			stepName,
 			translate,
-			hasMultipleSites,
+			hasInitializedSitesBackUrl,
 		} = this.props;
 
 		const headerText = translate( 'Start with a site type' );
 		const subHeaderText = '';
-
-		let allowBackFirstStep = false;
-		let backUrl;
-
-		//If we're starting a new site from an existing account, allow users to go back.
-		if ( hasMultipleSites ) {
-			allowBackFirstStep = true;
-			backUrl = '/';
-		}
 
 		return (
 			<StepWrapper
@@ -125,9 +115,9 @@ class SiteType extends Component {
 				fallbackSubHeaderText={ subHeaderText }
 				signupProgress={ signupProgress }
 				stepContent={ this.renderContent() }
-				allowBackFirstStep={ allowBackFirstStep }
-				backUrl={ backUrl }
-				backLabelText={ hasMultipleSites ? translate( 'Back to dashboard' ) : false }
+				allowBackFirstStep={ !! hasInitializedSitesBackUrl }
+				backUrl={ hasInitializedSitesBackUrl }
+				backLabelText={ hasInitializedSitesBackUrl ? translate( 'Back to dashboard' ) : null }
 			/>
 		);
 	}
@@ -136,7 +126,7 @@ class SiteType extends Component {
 export default connect(
 	state => ( {
 		siteType: getSiteType( state ),
-		hasMultipleSites: get( getCurrentUser( state ), 'site_count', 0 ) >= 1,
+		hasInitializedSitesBackUrl: hasInitializedSites( state ) ? '/' : false,
 	} ),
 	( dispatch, ownProps ) => ( {
 		submitStep: siteTypeValue => {
