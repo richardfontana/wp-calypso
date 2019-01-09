@@ -24,12 +24,7 @@ import FormSettingExplanation from 'components/forms/form-setting-explanation';
 import CountedTextarea from 'components/forms/counted-textarea';
 import Banner from 'components/banner';
 import PageViewTracker from 'lib/analytics/page-view-tracker';
-import {
-	getSeoTitleFormatsForSite,
-	isJetpackMinimumVersion,
-	isJetpackSite,
-	isRequestingSite,
-} from 'state/sites/selectors';
+import { getSeoTitleFormatsForSite, isJetpackSite, isRequestingSite } from 'state/sites/selectors';
 import {
 	isSiteSettingsSaveSuccessful,
 	getSiteSettingsSaveError,
@@ -72,10 +67,6 @@ const hasSupportingPlan = overSome( isBusiness, isEnterprise, isJetpackBusiness,
 
 function getGeneralTabUrl( slug ) {
 	return `/settings/general/${ slug }`;
-}
-
-function getJetpackPluginUrl( slug ) {
-	return `/plugins/jetpack/${ slug }`;
 }
 
 function stateForSite( site ) {
@@ -272,7 +263,6 @@ export class SeoForm extends React.Component {
 			conflictedSeoPlugin,
 			siteId,
 			siteIsJetpack,
-			jetpackVersionSupportsSeo,
 			showAdvancedSeo,
 			showWebsiteMeta,
 			site,
@@ -294,14 +284,12 @@ export class SeoForm extends React.Component {
 			showPreview = false,
 		} = this.state;
 
-		const isJetpackUnsupported = siteIsJetpack && ! jetpackVersionSupportsSeo;
-		const isDisabled = isJetpackUnsupported || isSubmittingForm || isFetchingSettings;
+		const isDisabled = isSubmittingForm || isFetchingSettings;
 		const isSeoDisabled = isDisabled || isSeoToolsActive === false;
 		const isSaveDisabled =
 			isDisabled || isSubmittingForm || ( ! showPasteError && invalidCodes.length > 0 );
 
 		const generalTabUrl = getGeneralTabUrl( slug );
-		const jetpackUpdateUrl = getJetpackPluginUrl( slug );
 
 		const nudgeTitle = siteIsJetpack
 			? translate( 'Enable SEO Tools by upgrading to Jetpack Premium' )
@@ -356,15 +344,6 @@ export class SeoForm extends React.Component {
 						</NoticeAction>
 					</Notice>
 				) }
-				{ isJetpackUnsupported && (
-					<Notice
-						status="is-warning"
-						showDismiss={ false }
-						text={ translate( 'SEO Tools require a newer version of Jetpack.' ) }
-					>
-						<NoticeAction href={ jetpackUpdateUrl }>{ translate( 'Update Now' ) }</NoticeAction>
-					</Notice>
-				) }
 
 				{ ! this.props.hasSeoPreviewFeature &&
 					! this.props.hasAdvancedSEOFeature &&
@@ -393,6 +372,7 @@ export class SeoForm extends React.Component {
 								<img
 									className="seo-settings__page-title-header-image"
 									src="/calypso/images/seo/page-title.svg"
+									alt=""
 								/>
 								<p className="seo-settings__page-title-header-text">
 									{ translate(
@@ -480,9 +460,6 @@ const mapStateToProps = ( state, ownProps ) => {
 	const isAdvancedSeoEligible = site && site.plan && hasSupportingPlan( site.plan );
 	const siteId = getSelectedSiteId( state );
 	const siteIsJetpack = isJetpackSite( state, siteId );
-	const jetpackVersionSupportsSeo = isJetpackMinimumVersion( state, siteId, '4.4-beta1' );
-	const isAdvancedSeoSupported =
-		site && ( ! siteIsJetpack || ( siteIsJetpack && jetpackVersionSupportsSeo ) );
 
 	const activePlugins = getPlugins( state, [ siteId ], 'active' );
 	const conflictedSeoPlugin = siteIsJetpack
@@ -495,9 +472,8 @@ const mapStateToProps = ( state, ownProps ) => {
 		siteIsJetpack,
 		selectedSite: getSelectedSite( state ),
 		storedTitleFormats: getSeoTitleFormatsForSite( getSelectedSite( state ) ),
-		showAdvancedSeo: isAdvancedSeoEligible && isAdvancedSeoSupported,
+		showAdvancedSeo: site && isAdvancedSeoEligible,
 		showWebsiteMeta: !! get( site, 'options.advanced_seo_front_page_description', '' ),
-		jetpackVersionSupportsSeo: jetpackVersionSupportsSeo,
 		isFetchingSite: isRequestingSite( state, siteId ),
 		isSeoToolsActive: isJetpackModuleActive( state, siteId, 'seo-tools' ),
 		isSiteHidden: isHiddenSite( state, siteId ),
