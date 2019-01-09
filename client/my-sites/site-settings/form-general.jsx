@@ -35,7 +35,7 @@ import Banner from 'components/banner';
 import { isBusiness } from 'lib/products-values';
 import { FEATURE_NO_BRANDING, PLAN_BUSINESS } from 'lib/plans/constants';
 import QuerySiteSettings from 'components/data/query-site-settings';
-import { isJetpackMinimumVersion, isJetpackSite } from 'state/sites/selectors';
+import { isJetpackSite } from 'state/sites/selectors';
 import { getSelectedSite, getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
 import { preventWidows } from 'lib/formatting';
 import scrollTo from 'lib/scroll-to';
@@ -255,14 +255,9 @@ export class SiteSettingsFormGeneral extends Component {
 			isRequestingSettings,
 			onChangeField,
 			siteIsJetpack,
-			supportsLanguageSelection,
 			translate,
 		} = this.props;
 		const errorNotice = this.renderLanguagePickerNotice();
-
-		if ( ! supportsLanguageSelection ) {
-			return null;
-		}
 
 		return (
 			<FormFieldset className={ siteIsJetpack && 'site-settings__has-divider is-top-only' }>
@@ -424,20 +419,12 @@ export class SiteSettingsFormGeneral extends Component {
 	}
 
 	Timezone() {
-		const {
-			fields,
-			isRequestingSettings,
-			translate,
-			supportsLanguageSelection,
-			moment,
-		} = this.props;
+		const { fields, isRequestingSettings, translate, moment } = this.props;
 		const guessedTimezone = moment.tz.guess();
 		const setGuessedTimezone = this.onTimezoneSelect.bind( this, guessedTimezone );
 
 		return (
-			<FormFieldset
-				className={ ! supportsLanguageSelection && 'site-settings__has-divider is-top-only' }
-			>
+			<FormFieldset>
 				<FormLabel htmlFor="blogtimezone">{ translate( 'Site Timezone' ) }</FormLabel>
 
 				<Timezone
@@ -597,18 +584,19 @@ export class SiteSettingsFormGeneral extends Component {
 								</Button>
 							</div>
 						</CompactCard>
-						{ site && ! isBusiness( site.plan ) && (
-							<Banner
-								feature={ FEATURE_NO_BRANDING }
-								plan={ PLAN_BUSINESS }
-								title={ translate(
-									'Remove the footer credit entirely with WordPress.com Business'
-								) }
-								description={ translate(
-									'Upgrade to remove the footer credit, add Google Analytics and more'
-								) }
-							/>
-						) }
+						{ site &&
+							! isBusiness( site.plan ) && (
+								<Banner
+									feature={ FEATURE_NO_BRANDING }
+									plan={ PLAN_BUSINESS }
+									title={ translate(
+										'Remove the footer credit entirely with WordPress.com Business'
+									) }
+									description={ translate(
+										'Upgrade to remove the footer credit, add Google Analytics and more'
+									) }
+								/>
+							) }
 					</div>
 				) }
 			</div>
@@ -653,8 +641,6 @@ const connectComponent = connect(
 			needsVerification: ! isCurrentUserEmailVerified( state ),
 			siteIsJetpack,
 			siteSlug: getSelectedSiteSlug( state ),
-			supportsLanguageSelection:
-				! siteIsJetpack || isJetpackMinimumVersion( state, siteId, '5.9-alpha' ),
 			selectedSite,
 		};
 	},
