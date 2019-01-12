@@ -269,6 +269,7 @@ function getDefaultContext( request ) {
 		store: createReduxStore( initialServerState ),
 		bodyClasses,
 		sectionCss,
+		isSupportSession: !! request.get( 'x-support-session' ),
 	} );
 
 	context.app = {
@@ -589,6 +590,15 @@ function handleLocaleSubdomains( req, res, next ) {
 	next();
 }
 
+// TODO: Determine if something like this is needed.
+function relaySupportSession( request, response, next ) {
+	const supportSession = request.get( 'x-support-session' );
+	if ( supportSession ) {
+		response.set( 'x-support-session', supportSession );
+	}
+	next();
+}
+
 module.exports = function() {
 	const app = express();
 
@@ -597,6 +607,7 @@ module.exports = function() {
 	app.use( logSectionResponseTime );
 	app.use( cookieParser() );
 	app.use( handleLocaleSubdomains );
+	app.use( relaySupportSession );
 
 	// redirect homepage if the Reader is disabled
 	app.get( '/', function( request, response, next ) {

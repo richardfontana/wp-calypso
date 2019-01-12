@@ -63,6 +63,7 @@ class Document extends React.Component {
 			devDocsURL,
 			feedbackURL,
 			inlineScriptNonce,
+			isSupportSession,
 		} = this.props;
 
 		const csskey = isRTL ? 'css.rtl' : 'css.ltr';
@@ -125,6 +126,7 @@ class Document extends React.Component {
 						'color-scheme': config.isEnabled( 'me/account/color-scheme-picker' ),
 						[ 'is-group-' + sectionGroup ]: sectionGroup,
 						[ 'is-section-' + sectionName ]: sectionName,
+						'is-support-session': isSupportSession,
 					} ) }
 				>
 					{ /* eslint-disable wpcalypso/jsx-classname-namespace, react/no-danger */ }
