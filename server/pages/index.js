@@ -248,6 +248,8 @@ function getDefaultContext( request ) {
 		lang = request.context.lang;
 	}
 
+	const isSupportSession = !! request.get( 'x-support-session' );
+
 	const context = Object.assign( {}, request.context, {
 		commitSha: process.env.hasOwnProperty( 'COMMIT_SHA' ) ? process.env.COMMIT_SHA : '(unknown)',
 		compileDebug: process.env.NODE_ENV === 'development',
@@ -269,7 +271,8 @@ function getDefaultContext( request ) {
 		store: createReduxStore( initialServerState ),
 		bodyClasses,
 		sectionCss,
-		isSupportSession: !! request.get( 'x-support-session' ),
+		isSupportSession, 
+		isLoggedIn: !! request.cookies.wordpress_logged_in || isSupportSession,
 	} );
 
 	context.app = {
@@ -352,9 +355,7 @@ function setUpLoggedInRoute( req, res, next ) {
 			redirectTo: protocol + '://' + config( 'hostname' ) + req.originalUrl,
 		} );
 
-		// if we don't have a wordpress cookie, we know the user needs to
-		// authenticate
-		if ( ! req.cookies.wordpress_logged_in ) {
+		if ( ! req.context.isLoggedIn ) {
 			debug( 'User not logged in. Redirecting to %s', redirectUrl );
 			res.redirect( redirectUrl );
 			return;
@@ -523,7 +524,7 @@ function setUpCSP( req, res, next ) {
 function setUpRoute( req, res, next ) {
 	req.context = getDefaultContext( req );
 	setUpCSP( req, res, () =>
-		req.cookies.wordpress_logged_in // a cookie probably indicates someone is logged-in
+		req.context.isLoggedIn
 			? setUpLoggedInRoute( req, res, next )
 			: setUpLoggedOutRoute( req, res, next )
 	);
@@ -640,42 +641,56 @@ module.exports = function() {
 
 	if ( process.env.NODE_ENV !== 'development' ) {
 		app.get( '/discover', function( req, res, next ) {
-			if ( ! req.cookies.wordpress_logged_in ) {
+			console.log( '== /discover route ==' );
+			if ( ! req.context.isLoggedIn ) {
+				console.log( 'is logged out' );
 				res.redirect( config( 'discover_logged_out_redirect_url' ) );
 			} else {
+				console.log( 'is logged in' );
 				next();
 			}
 		} );
 
 		// redirect logged-out tag pages to en.wordpress.com
 		app.get( '/tag/:tag_slug', function( req, res, next ) {
-			if ( ! req.cookies.wordpress_logged_in ) {
+			console.log( '== /tag/:tag_slug route ==' );
+			if ( ! req.context.isLoggedIn ) {
+				console.log( 'is logged out' );
 				res.redirect( 'https://en.wordpress.com/tag/' + encodeURIComponent( req.params.tag_slug ) );
 			} else {
+				console.log( 'is logged in' );
 				next();
 			}
 		} );
 
 		// redirect logged-out searches to en.search.wordpress.com
 		app.get( '/read/search', function( req, res, next ) {
-			if ( ! req.cookies.wordpress_logged_in ) {
+			console.log( '== /read/search route ==' );
+			if ( ! req.context.isLoggedIn ) {
+				console.log( 'is logged out' );
 				res.redirect( 'https://en.search.wordpress.com/?q=' + encodeURIComponent( req.query.q ) );
 			} else {
+				console.log( 'is logged in' );
 				next();
 			}
 		} );
 
 		app.get( '/plans', function( req, res, next ) {
-			if ( ! req.cookies.wordpress_logged_in ) {
+			console.log( '== /read/search route ==' );
+			if ( ! req.context.isLoggedIn ) {
+				console.log( 'is logged out' );
 				const queryFor = req.query && req.query.for;
 				if ( queryFor && 'jetpack' === queryFor ) {
+					console.log( 'jetpack redirect' );
 					res.redirect(
 						'https://wordpress.com/wp-login.php?redirect_to=https%3A%2F%2Fwordpress.com%2Fplans'
 					);
 				} else {
+					console.log( 'wpcom redirect' );
 					res.redirect( 'https://wordpress.com/pricing' );
 				}
 			} else {
+				console.log( 'is logged in' );
 				next();
 			}
 		} );
