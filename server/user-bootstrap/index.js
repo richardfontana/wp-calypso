@@ -27,11 +27,28 @@ const debug = debugFactory( 'calypso:bootstrap' ),
 	},
 	url = `${ API_PATH }?${ stringify( apiQuery ) }`;
 
-module.exports = function( authCookieValue, geoCountry ) {
+/**
+ * Requests the current user for user bootstrap.
+ *
+ * @param {(string|undefined)} authCookieValue The authentication cookie, if there is one.
+ * @param {string}             geoCountry      The GeoIP country code.
+ * @param {(string|undefined)} supportSession  The support session.
+ *
+ * @returns {Promise<object>} A promise for a user object.
+ */
+module.exports = function( authCookieValue, geoCountry, supportSession ) {
 	return new Promise( ( resolve, reject ) => {
+		if ( authCookieValue && supportSession ) {
+			reject(
+				new Error(
+					'Both an auth cookie and a support session were provided for bootstrap. This should not occur.'
+				)
+			);
+			return;
+		}
+
 		// create HTTP Request object
 		const req = superagent.get( url );
-		let hmac, hash;
 
 		if ( authCookieValue ) {
 			authCookieValue = decodeURIComponent( authCookieValue );
@@ -42,14 +59,22 @@ module.exports = function( authCookieValue, geoCountry ) {
 				);
 			}
 
-			hmac = crypto.createHmac( 'md5', API_KEY );
+			const hmac = crypto.createHmac( 'md5', API_KEY );
 			hmac.update( authCookieValue );
-			hash = hmac.digest( 'hex' );
+			const hash = hmac.digest( 'hex' );
 
 			req.set( 'X-Forwarded-GeoIP-Country-Code', geoCountry );
 			req.set( 'Authorization', 'X-WPCALYPSO ' + hash );
 			req.set( 'Cookie', AUTH_COOKIE_NAME + '=' + authCookieValue );
 			req.set( 'User-Agent', 'WordPress.com Calypso' );
+		} else if ( supportSession ) {
+			// TODO: Update this with hashed support session header for auth. This will not work as-is because Calypso server requests aren't proxied.
+			console.log( `== SUPPORT SESSION == [${ supportSession }]` );
+			req.set( 'x-support-session', supportSession );
+			console.log( `== SET SUPPORT SESSION ==` );
+		} else {
+			reject( new Error( 'Cannot bootstrap without an auth cookie or a support session.' ) );
+			return;
 		}
 
 		// start the request

@@ -271,7 +271,7 @@ function getDefaultContext( request ) {
 		store: createReduxStore( initialServerState ),
 		bodyClasses,
 		sectionCss,
-		isSupportSession, 
+		isSupportSession,
 		isLoggedIn: !! request.cookies.wordpress_logged_in || isSupportSession,
 	} );
 
@@ -367,7 +367,11 @@ function setUpLoggedInRoute( req, res, next ) {
 
 		debug( 'Issuing API call to fetch user object' );
 
-		const userPromise = user( req.cookies.wordpress_logged_in, geoCountry )
+		const userPromise = user(
+			req.cookies.wordpress_logged_in,
+			geoCountry,
+			req.get( 'x-support-session' )
+		)
 			.then( data => {
 				const end = new Date().getTime() - start;
 
