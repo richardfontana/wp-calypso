@@ -5,7 +5,7 @@
 import page from 'page';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { find, get, some } from 'lodash';
+import { find, get, some, includes } from 'lodash';
 import { isDesktop } from 'lib/viewport';
 import { localize } from 'i18n-calypso';
 
@@ -69,6 +69,16 @@ class WpcomChecklistComponent extends PureComponent {
 			email_setup: this.renderEmailSetupTask,
 			email_forwarding_upgraded_to_gsuite: this.renderEmailForwardingUpgradedToGSuiteTask,
 			gsuite_tos_accepted: this.renderGSuiteTOSAcceptedTask,
+			about_text_updated: this.renderAboutTextUpdatedTask,
+			homepage_photo_updated: this.renderHomepagePhotoUpdatedTask,
+			business_hours_added: this.renderBusinessHoursSetTask,
+			service_list_added: this.renderServiceListAddedTask,
+			staff_info_added: this.renderStaffInfoAddedTask,
+			product_list_added: this.renderProductListAddedTask,
+			menu_added: this.renderMenuAddedTask,
+			portfolio_item_added: this.renderPortfolioItemAddedTask,
+			mission_statement_added: this.renderMissionStatementAddedTask,
+			qualifications_added: this.renderQualificationsAddedTask,
 		};
 	}
 
@@ -201,7 +211,6 @@ class WpcomChecklistComponent extends PureComponent {
 
 	render() {
 		const {
-			designType,
 			siteId,
 			taskStatuses,
 			viewMode,
@@ -211,10 +220,9 @@ class WpcomChecklistComponent extends PureComponent {
 			closePopover,
 			showNotification,
 			storedTask,
-			isSiteUnlaunched,
 		} = this.props;
 
-		const taskList = getTaskList( taskStatuses, designType, isSiteUnlaunched );
+		const taskList = getTaskList( this.props );
 
 		let ChecklistComponent = Checklist;
 
@@ -253,8 +261,7 @@ class WpcomChecklistComponent extends PureComponent {
 	}
 
 	componentDidUpdate() {
-		const { taskStatuses, designType, isSiteUnlaunched } = this.props;
-		const taskList = getTaskList( taskStatuses, designType, isSiteUnlaunched );
+		const taskList = getTaskList( this.props );
 		taskList.getAll().forEach( task => {
 			if ( this.shouldRenderTask( task.id ) ) {
 				this.trackTaskDisplayOnce( task );
@@ -263,14 +270,7 @@ class WpcomChecklistComponent extends PureComponent {
 	}
 
 	renderTask( task ) {
-		const {
-			siteSlug,
-			viewMode,
-			taskStatuses,
-			designType,
-			isSiteUnlaunched,
-			closePopover,
-		} = this.props;
+		const { siteSlug, viewMode, closePopover } = this.props;
 
 		let TaskComponent = Task;
 
@@ -283,7 +283,7 @@ class WpcomChecklistComponent extends PureComponent {
 				break;
 		}
 
-		const taskList = getTaskList( taskStatuses, designType, isSiteUnlaunched );
+		const taskList = getTaskList( this.props );
 		const firstIncomplete = taskList.getFirstIncompleteTask();
 
 		const baseProps = {
@@ -664,6 +664,177 @@ class WpcomChecklistComponent extends PureComponent {
 			/>
 		);
 	};
+
+	renderAboutTextUpdatedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Edit About text' ) }
+				description={ translate(
+					'Update the text we’ve written for you to describe what makes your business unique. ' +
+						'Make your homepage speak to your customers.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 5, args: [ 5 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderHomepagePhotoUpdatedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Change homepage photo' ) }
+				description={ translate(
+					'Upload your own photoo or choose from a wide selection of free ones to personalize your new site.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 10, args: [ 10 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderBusinessHoursAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add business hours' ) }
+				description={ translate(
+					'Let your customers know when you’re open or the best time to contact you.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 8, args: [ 8 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderServiceListAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add a list of services' ) }
+				description={ translate(
+					'Let potential customers and clients know what you have to offer.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 8, args: [ 8 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderStaffInfoAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate, siteVerticals } = this.props;
+		let staff = translate( 'staff' );
+
+		if ( includes( siteVerticals, 'Health & Medical' ) ) {
+			staff = translate( 'doctors', { context: 'Health & Medical' } );
+		} else if ( includes( siteVerticals, 'Educations' ) ) {
+			staff = translate( 'educators', { context: 'Educations' } );
+		} else if ( includes( siteVerticals, 'Fitness & Excercise' ) ) {
+			staff = translate( 'professionals', { context: 'Fitness & Excercise' } );
+		}
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add info about your %(staff)s', { args: { staff } } ) }
+				description={ translate(
+					'Customers love to learn about who they’re going to interact with if they contact you. ' +
+						'Give them your best.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 10, args: [ 10 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderProductListAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add a list of your products and services' ) }
+				description={ translate(
+					'Let visitors know what you do best and what you have to offer.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 10, args: [ 10 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderMenuAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add your menu' ) }
+				description={ translate(
+					'Upload your menu so customers know what to expect when they stop in.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 2, args: [ 2 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderPortfolioItemAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add a portfolio item' ) }
+				description={ translate(
+					'You do great work. Show it off to attract new clients or highlight pieces you’re proud of.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 10, args: [ 10 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderMissionStatementAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add your mission statement' ) }
+				description={ translate(
+					'Inspire visitors by adding a mission statement to your homepage.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 5, args: [ 5 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
+
+	renderQualificationsAddedTask = ( TaskComponent, baseProps, task ) => {
+		const { translate } = this.props;
+
+		return (
+			<TaskComponent
+				{ ...baseProps }
+				title={ translate( 'Add your qualifications' ) }
+				description={ translate(
+					'Instill confidence and trust by telling people why you’re qualified to help them.'
+				) }
+				duration={ translate( '%d minute', '%d minutes', { count: 8, args: [ 8 ] } ) }
+				onDismiss={ this.handleTaskDismiss( task.id ) }
+			/>
+		);
+	};
 }
 
 function getContactPage( posts ) {
@@ -697,6 +868,7 @@ export default connect(
 	state => {
 		const siteId = getSelectedSiteId( state );
 		const siteSlug = getSiteSlug( state, siteId );
+		const siteChecklist = getSiteChecklist( state, siteId );
 		const user = getCurrentUser( state );
 		const taskUrls = getTaskUrls( state, siteId );
 
@@ -704,7 +876,9 @@ export default connect(
 			designType: getSiteOption( state, siteId, 'design_type' ),
 			siteId,
 			siteSlug,
-			taskStatuses: get( getSiteChecklist( state, siteId ), [ 'tasks' ] ),
+			siteSegment: get( siteChecklist, 'segment' ),
+			siteVerticals: get( siteChecklist, 'verticals' ),
+			taskStatuses: get( siteChecklist, 'tasks' ),
 			taskUrls,
 			userEmail: ( user && user.email ) || '',
 			needsVerification: ! isCurrentUserEmailVerified( state ),
