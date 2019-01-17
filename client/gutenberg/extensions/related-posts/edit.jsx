@@ -23,7 +23,7 @@ import { withSelect } from '@wordpress/data';
  */
 import { __ } from 'gutenberg/extensions/presets/jetpack/utils/i18n';
 
-export const MAX_POSTS_TO_SHOW = 3;
+export const MAX_POSTS_TO_SHOW = 6;
 
 function PlaceholderPostEdit( props ) {
 	const previewClassName = 'related-posts__preview';
@@ -60,6 +60,70 @@ function PlaceholderPostEdit( props ) {
 	);
 }
 
+function RelatedPostsEditItem( props ) {
+	const previewClassName = 'related-posts__preview';
+
+	return (
+		<div className={ `${ previewClassName }-post` }>
+			{ props.displayThumbnails && props.post.img && props.post.img.src && (
+				<Button className={ `${ previewClassName }-post-link` } isLink>
+					<img src={ props.post.img.src } alt={ props.post.title } />
+				</Button>
+			) }
+			<h4>
+				<Button className={ `${ previewClassName }-post-link` } isLink>
+					{ props.post.title }
+				</Button>
+			</h4>
+			{ props.displayDate && (
+				<span className={ `${ previewClassName }-post-date has-small-font-size` }>
+					{ props.post.date }
+				</span>
+			) }
+			{ props.displayContext && (
+				<p className={ `${ previewClassName }-post-context` }>{ props.post.context }</p>
+			) }
+		</div>
+	);
+}
+
+function RelatedPostsPreviewRows( props ) {
+	const className = 'related-posts__row';
+
+	let topRowEnd = [];
+	let bottomRowStart = [];
+	const displayLowerRow = props.posts.length > 3;
+
+	switch ( props.posts.length ) {
+		case 2:
+		case 4:
+		case 5:
+			topRowEnd = 2;
+			break;
+		default:
+			topRowEnd = 3;
+			break;
+	}
+	switch ( props.posts.length ) {
+		case 4:
+		case 5:
+			bottomRowStart = 2;
+			break;
+		default:
+			bottomRowStart = 3;
+			break;
+	}
+
+	return (
+		<div className={ className }>
+			<div className={ className + '-upper' }>{ props.posts.slice( 0, topRowEnd ) }</div>
+			{ displayLowerRow && (
+				<div className={ className + '-lower' }>{ props.posts.slice( bottomRowStart ) }</div>
+			) }
+		</div>
+	);
+}
+
 class RelatedPostsEdit extends Component {
 	render() {
 		const { attributes, className, posts, setAttributes } = this.props;
@@ -80,22 +144,37 @@ class RelatedPostsEdit extends Component {
 			},
 		];
 
-		const postsToDisplay = posts.length ? posts : [];
-		const displayPosts = postsToDisplay.slice( 0, postsToShow );
+		// To prevent the block from crashing, we need to limit ourselves to the
+		// posts returned by the backend - so if we want 6 posts, but only 3 are
+		// returned, we need to limit ourselves to those 3 and fill in the rest
+		// with placeholders.
+		//
+		// Also, if the site does not have sufficient posts to display related ones
+		// (minimum 10 posts), we also use this code block to fill in the
+		// placeholders.
 		const previewClassName = 'related-posts__preview';
-
-		const displayPlaceholderPosts = ! posts.length;
-
-		const inlinePlaceholderPosts = [];
+		const displayPosts = [];
 		for ( let i = 0; i < postsToShow; i++ ) {
-			inlinePlaceholderPosts.push(
-				<PlaceholderPostEdit
-					key={ 'related-post-placeholder-' + i }
-					displayThumbnails={ displayThumbnails }
-					displayDate={ displayDate }
-					displayContext={ displayContext }
-				/>
-			);
+			if ( posts[ i ] ) {
+				displayPosts.push(
+					<RelatedPostsEditItem
+						key={ previewClassName + '-' + i }
+						post={ posts[ i ] }
+						displayThumbnails={ displayThumbnails }
+						displayDate={ displayDate }
+						displayContext={ displayContext }
+					/>
+				);
+			} else {
+				displayPosts.push(
+					<PlaceholderPostEdit
+						key={ 'related-post-placeholder-' + i }
+						displayThumbnails={ displayThumbnails }
+						displayDate={ displayDate }
+						displayContext={ displayContext }
+					/>
+				);
+			}
 		}
 
 		return (
@@ -140,30 +219,7 @@ class RelatedPostsEdit extends Component {
 					} ) }
 				>
 					<div className={ previewClassName }>
-						{ displayPlaceholderPosts
-							? inlinePlaceholderPosts
-							: displayPosts.map( post => (
-									<div className={ `${ previewClassName }-post` } key={ post.id }>
-										{ displayThumbnails && post.img && post.img.src && (
-											<Button className={ `${ previewClassName }-post-link` } isLink>
-												<img src={ post.img.src } alt={ post.title } />
-											</Button>
-										) }
-										<h4>
-											<Button className={ `${ previewClassName }-post-link` } isLink>
-												{ post.title }
-											</Button>
-										</h4>
-										{ displayDate && (
-											<span className={ `${ previewClassName }-post-date has-small-font-size` }>
-												{ post.date }
-											</span>
-										) }
-										{ displayContext && (
-											<p className={ `${ previewClassName }-post-context` }>{ post.context }</p>
-										) }
-									</div>
-							  ) ) }
+						<RelatedPostsPreviewRows posts={ displayPosts } />
 					</div>
 				</div>
 			</Fragment>

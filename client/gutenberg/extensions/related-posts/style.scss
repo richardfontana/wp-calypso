@@ -4,6 +4,15 @@ $gray-lighten-30: #f6f6f6;
 
 .wp-block-jetpack-related-posts {
 	&.is-grid {
+		.related-posts__row {
+			&-upper {
+				margin-bottom: 1em;
+			}
+			&-upper, &-lower {
+				display: flex;
+			}
+		}
+
 		.related-posts__preview {
 			display: flex;
 			margin: 0 -10px;

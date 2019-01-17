@@ -12,7 +12,7 @@ import './style.scss';
 import edit from './edit';
 import { __ } from 'gutenberg/extensions/presets/jetpack/utils/i18n';
 
-export const MAX_POSTS_TO_SHOW = 3;
+export const MAX_POSTS_TO_SHOW = 6;
 
 export const name = 'related-posts';
 
