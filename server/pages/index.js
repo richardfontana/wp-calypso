@@ -272,6 +272,7 @@ function getDefaultContext( request ) {
 		bodyClasses,
 		sectionCss,
 		isSupportSession,
+		// TODO: Consider a clearer, safer name because we aren't validating the cookie or support session ID
 		isLoggedIn: !! request.cookies.wordpress_logged_in || isSupportSession,
 	} );
 
