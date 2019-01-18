@@ -211,9 +211,6 @@ function getWebpackConfig( { cssFilename, externalizeWordPressPackages = false }
 			],
 		},
 		module: {
-			// avoids this warning:
-			// https://github.com/localForage/localForage/issues/577
-			noParse: /[\/\\]node_modules[\/\\]localforage[\/\\]dist[\/\\]localforage\.js$/,
 			rules: [
 				{
 					test: /\.jsx?$/,
@@ -250,7 +247,7 @@ function getWebpackConfig( { cssFilename, externalizeWordPressPackages = false }
 						{
 							loader: 'babel-loader',
 							options: {
-								configFile: path.resolve( __dirname, 'babel.config.js' ),
+								configFile: path.resolve( __dirname, 'babel.dependencies.config.js' ),
 								babelrc: false,
 								cacheDirectory: path.join( __dirname, 'build', '.babel-client-cache' ),
 								cacheIdentifier,
