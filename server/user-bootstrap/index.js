@@ -20,6 +20,7 @@ const debug = debugFactory( 'calypso:bootstrap' ),
 	/**
 	 * WordPress.com REST API /me endpoint.
 	 */
+	SUPPORT_SESSION_API_KEY = config( 'wpcom_calypso_support_session_rest_api_key' ),
 	API_PATH = 'https://public-api.wordpress.com/rest/v1/me',
 	apiQuery = {
 		meta: 'flags',
@@ -68,10 +69,17 @@ module.exports = function( authCookieValue, geoCountry, supportSession ) {
 			req.set( 'Cookie', AUTH_COOKIE_NAME + '=' + authCookieValue );
 			req.set( 'User-Agent', 'WordPress.com Calypso' );
 		} else if ( supportSession ) {
-			// TODO: Update this with hashed support session header for auth. This will not work as-is because Calypso server requests aren't proxied.
 			console.log( `== SUPPORT SESSION == [${ supportSession }]` );
+
+			// TODO: Update this with hashed support session header for auth. This will not work as-is because Calypso server requests aren't proxied.
+			const hmac = crypto.createHmac( 'md5', SUPPORT_SESSION_API_KEY );
+			hmac.update( supportSession );
+			const hash = hmac.digest( 'hex' );
+			req.set( 'Authorization', `X-WPCALYPSO-SUPPORT-SESSION ${ hash }` );
+
+			console.log( `== SUPPORT SESSION HASH == [${ hash }]` );
+
 			req.set( 'x-support-session', supportSession );
-			console.log( `== SET SUPPORT SESSION ==` );
 		} else {
 			reject( new Error( 'Cannot bootstrap without an auth cookie or a support session.' ) );
 			return;
