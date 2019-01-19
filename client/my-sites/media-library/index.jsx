@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { isEqual, toArray, some } from 'lodash';
+import { includes, isEqual, some } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -33,20 +33,6 @@ import { requestKeyringConnections } from 'state/sharing/keyring/actions';
  * Style dependencies
  */
 import './style.scss';
-
-// External media sources that do not need a user to connect them
-// should be listed here.
-const noConnectionNeeded = [ 'pexels' ];
-
-const isConnected = props =>
-	noConnectionNeeded.indexOf( props.source ) !== -1 ||
-	props.source === '' ||
-	some( props.connectedServices, item => item.service === props.source );
-const needsKeyring = props =>
-	noConnectionNeeded.indexOf( props.source ) === -1 &&
-	! props.isRequesting &&
-	props.source !== '' &&
-	props.connectedServices.length === 0;
 
 class MediaLibrary extends Component {
 	static propTypes = {
@@ -81,15 +67,15 @@ class MediaLibrary extends Component {
 		disabledDataSources: [],
 	};
 
-	componentWillMount() {
-		if ( needsKeyring( this.props ) ) {
+	componentDidMount() {
+		if ( this.props.needsKeyring ) {
 			// Are we connected to anything yet?
 			this.props.requestKeyringConnections();
 		}
 	}
 
-	componentWillReceiveProps( nextProps ) {
-		if ( needsKeyring( nextProps ) && this.props.source === '' ) {
+	componentDidUpdate( prevProps ) {
+		if ( this.props.needsKeyring && prevProps.source === '' ) {
 			// If we have changed to an external data source then check for a keyring connection
 			this.props.requestKeyringConnections();
 		}
@@ -171,7 +157,7 @@ class MediaLibrary extends Component {
 				filterRequiresUpgrade={ this.filterRequiresUpgrade() }
 				search={ this.props.search }
 				source={ this.props.source }
-				isConnected={ isConnected( this.props ) }
+				isConnected={ this.props.isConnected }
 				containerWidth={ this.props.containerWidth }
 				single={ this.props.single }
 				scrollable={ this.props.scrollable }
@@ -213,7 +199,7 @@ class MediaLibrary extends Component {
 					onSourceChange={ this.props.onSourceChange }
 					source={ this.props.source }
 					onSearch={ this.doSearch }
-					isConnected={ isConnected( this.props ) }
+					isConnected={ this.props.isConnected }
 					post={ !! this.props.postId }
 					disableLargeImageSources={ this.props.disableLargeImageSources }
 					disabledDataSources={ this.props.disabledDataSources }
@@ -224,12 +210,25 @@ class MediaLibrary extends Component {
 	}
 }
 
+// External media sources that do not need a user to connect them
+// should be listed here.
+const noConnectionNeeded = [ 'pexels' ];
+
+const isConnected = ( state, source ) =>
+	source === '' ||
+	includes( noConnectionNeeded, source ) ||
+	some( getKeyringConnections( state ), { type: 'other', status: 'ok', service: source } );
+
+const needsKeyring = ( state, source ) =>
+	source !== '' &&
+	! includes( noConnectionNeeded, source ) &&
+	! isKeyringConnectionsFetching( state ) &&
+	! some( getKeyringConnections( state ), { type: 'other', status: 'ok' } );
+
 export default connect(
-	state => ( {
-		connectedServices: toArray( getKeyringConnections( state ) ).filter(
-			item => item.type === 'other' && item.status === 'ok'
-		),
-		isRequesting: isKeyringConnectionsFetching( state ),
+	( state, { source = '' } ) => ( {
+		isConnected: isConnected( state, source ),
+		needsKeyring: needsKeyring( state, source ),
 	} ),
 	{
 		requestKeyringConnections,
