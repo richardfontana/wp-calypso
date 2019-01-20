@@ -144,7 +144,7 @@ class SiteMockups extends Component {
 			<div className={ siteMockupClasses }>
 				{ ! this.state.fontError && <style>{ fontStyle }</style> }
 				<SiteMockup size="desktop" { ...otherProps } />
-				<SiteMockup size="mobile" { ...otherProps } />
+				{ /*<SiteMockup size="mobile" { ...otherProps } />*/ }
 			</div>
 		);
 	}
@@ -157,7 +157,7 @@ export default connect( state => {
 		title: siteInformation.title || translate( 'Your New Website' ),
 		address: siteInformation.address,
 		phone: siteInformation.phone,
-		siteStyle: getSiteStyle( state ),
+		siteStyle: getSiteStyle( state ) || 'default',
 		siteType: getSiteType( state ),
 		vertical,
 		verticalPreviewContent: getSiteVerticalPreview( state ),
