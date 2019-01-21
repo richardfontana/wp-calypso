@@ -370,6 +370,7 @@ class DomainsStep extends React.Component {
 				designType={ this.getDesignType() }
 				vendor={ getSuggestionsVendor() }
 				deemphasiseTlds={ this.props.flowName === 'ecommerce' ? [ 'blog' ] : [] }
+				selectedSite={ this.props.selectedSite }
 			/>
 		);
 	};
