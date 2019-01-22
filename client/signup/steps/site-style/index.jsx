@@ -20,6 +20,7 @@ import FormLabel from 'components/forms/form-label';
 import FormRadio from 'components/forms/form-radio';
 import StepWrapper from 'signup/step-wrapper';
 import SignupActions from 'lib/signup/actions';
+import { preLoadAllFonts } from 'lib/signup/font-loader';
 import { setSiteStyle } from 'state/signup/steps/site-style/actions';
 import { getSiteStyle } from 'state/signup/steps/site-style/selectors';
 import { getSiteType } from 'state/signup/steps/site-type/selectors';
@@ -46,6 +47,7 @@ export class SiteStyleStep extends Component {
 	};
 
 	componentDidMount() {
+		preLoadAllFonts();
 		SignupActions.saveSignupStep( {
 			stepName: this.props.stepName,
 		} );
@@ -56,9 +58,9 @@ export class SiteStyleStep extends Component {
 
 	handleSubmit = event => {
 		event.preventDefault();
-		const selectedStyleData = this.getSelectedStyleDataById();
+		const selectedStyleData = this.getSelectedStyleDataById() || this.props.styleOptions[ 0 ];
 		this.props.submitSiteStyle(
-			this.props.siteStyle,
+			selectedStyleData.id,
 			selectedStyleData.theme,
 			selectedStyleData.label
 		);
@@ -148,6 +150,7 @@ export class SiteStyleStep extends Component {
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	submitSiteStyle: ( siteStyle, themeSlugWithRepo, styleLabel ) => {
 		const { flowName, stepName, goToNextStep } = ownProps;
+		dispatch( setSiteStyle( siteStyle ) );
 		dispatch(
 			recordTracksEvent( 'calypso_signup_actions_submit_site_style', {
 				// The untranslated 'product' name of the variation/theme

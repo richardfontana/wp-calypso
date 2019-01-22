@@ -57,7 +57,7 @@ button {
 		border-width: 2px 1px 1px;
 	}
 
-	background-color: $white;
+	background-color: var( --color-white );
 	color: var( --color-neutral-700 );
 	border-color: var( --color-neutral-100 );
 
@@ -74,7 +74,7 @@ button {
 	&:disabled,
 	&.disabled {
 		color: var( --color-neutral-50 );
-		background-color: $white;
+		background-color: var( --color-white );
 		border-color: var( --color-neutral-50 );
 		cursor: default;
 
@@ -133,13 +133,13 @@ button {
 .button.is-primary {
 	background-color: var( --color-accent );
 	border-color: var( --color-accent-dark );
-	color: $white;
+	color: var( --color-white );
 
 	&:hover,
 	&:focus {
 		background-color: var( --color-button-primary-background-hover );
 		border-color: var( --color-accent-dark );
-		color: $white;
+		color: var( --color-white );
 	}
 
 	.accessible-focus &:focus {
@@ -147,14 +147,14 @@ button {
 	}
 
 	&.is-compact {
-		color: $white;
+		color: var( --color-white );
 	}
 
 	&[disabled],
 	&:disabled,
 	&.disabled {
 		color: var( --color-neutral-50 );
-		background-color: $white;
+		background-color: var( --color-white );
 		border-color: var( --color-neutral-50 );
 	}
 
@@ -184,15 +184,16 @@ button {
 
 	&[disabled],
 	&:disabled {
-		color: lighten( $alert-red, 30% );
+		color: var( --color-neutral-50 );
+		background-color: var( --color-white );
 		border-color: var( --color-neutral-50 );
 	}
 }
 
 .button.is-primary.is-scary {
 	background-color: var( --color-error );
-	border-color: darken( $alert-red, 20% );
-	color: $white;
+	border-color: var( --color-error-dark );
+	color: var( --color-white );
 
 	&:hover,
 	&:focus {
@@ -201,8 +202,9 @@ button {
 
 	&[disabled],
 	&:disabled {
-		background-color: lighten( $alert-red, 20% );
-		border-color: tint( $alert-red, 30% );
+		color: var( --color-neutral-50 );
+		background-color: var( --color-white );
+		border-color: var( --color-neutral-50 );
 	}
 
 	&.is-busy {
@@ -219,7 +221,7 @@ button {
 .button.is-borderless {
 	border: none;
 	background: none;
-	color: var( --color-neutral-700 );
+	color: var( --color-neutral-500 );
 	padding-left: 0;
 	padding-right: 0;
 
