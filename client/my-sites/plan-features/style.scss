@@ -215,7 +215,7 @@ $plan-features-sidebar-width: 272px;
 		}
 
 		&.is-ecommerce-plan {
-			border-bottom: solid 2px $alert-purple;
+			border-bottom: solid 2px var( --color-plan-ecommerce );
 		}
 	}
 
@@ -230,7 +230,7 @@ $plan-features-sidebar-width: 272px;
 		}
 
 		&.is-business-plan {
-			border-bottom: solid 2px $alert-purple;
+			border-bottom: solid 2px var( --color-plan-business );
 		}
 	}
 }
