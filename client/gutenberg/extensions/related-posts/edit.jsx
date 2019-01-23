@@ -83,7 +83,6 @@ function RelatedPostsPreviewRows( props ) {
 	const className = 'jp-related-posts-i2__row';
 
 	let topRowEnd = 0;
-	let bottomRowStart = 0;
 	const displayLowerRow = props.posts.length > 3;
 
 	switch ( props.posts.length ) {
@@ -96,15 +95,6 @@ function RelatedPostsPreviewRows( props ) {
 			topRowEnd = 3;
 			break;
 	}
-	switch ( props.posts.length ) {
-		case 4:
-		case 5:
-			bottomRowStart = 2;
-			break;
-		default:
-			bottomRowStart = 3;
-			break;
-	}
 
 	return (
 		<div>
@@ -112,8 +102,8 @@ function RelatedPostsPreviewRows( props ) {
 				{ props.posts.slice( 0, topRowEnd ) }
 			</div>
 			{ displayLowerRow && (
-				<div className={ className } data-post-count={ props.posts.slice( bottomRowStart ).length }>
-					{ props.posts.slice( bottomRowStart ) }
+				<div className={ className } data-post-count={ props.posts.slice( topRowEnd ).length }>
+					{ props.posts.slice( topRowEnd ) }
 				</div>
 			) }
 		</div>
