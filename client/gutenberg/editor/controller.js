@@ -35,10 +35,10 @@ import { waitForData } from 'state/data-layer/http-data';
 const debug = debugFactory( 'calypso:gutenberg:controller' );
 
 function determinePostType( context ) {
-	if ( context.path.startsWith( '/block-editor/post/' ) ) {
+	if ( context.path.startsWith( '/gutenberg/post/' ) ) {
 		return 'post';
 	}
-	if ( context.path.startsWith( '/block-editor/page/' ) ) {
+	if ( context.path.startsWith( '/gutenberg/page/' ) ) {
 		return 'page';
 	}
 

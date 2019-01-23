@@ -299,7 +299,7 @@ const optIn = ( siteId, gutenbergUrl ) => {
 function mapStateToProps( state ) {
 	const siteId = getSelectedSiteId( state );
 	const currentRoute = getCurrentRoute( state );
-	const classicRoute = currentRoute.replace( '/block-editor/', '' );
+	const classicRoute = currentRoute.replace( '/gutenberg/', '' );
 	const section = getSection( state );
 
 	const isCalypsoClassic = section.group && section.group === 'editor';

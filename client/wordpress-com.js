@@ -468,7 +468,7 @@ sections.push( {
 
 sections.push( {
 	name: 'gutenberg-editor',
-	paths: [ '/block-editor' ],
+	paths: [ '/gutenberg' ],
 	module: 'gutenberg/editor',
 	group: 'gutenberg',
 	css: 'gutenberg-editor',

@@ -34,7 +34,7 @@ export class Sites extends Component {
 		}
 
 		// No support for Gutenberg on VIP or Jetpack sites yet.
-		if ( /^\/block-editor/.test( path ) ) {
+		if ( /^\/gutenberg/.test( path ) ) {
 			return ! site.is_vip && ! site.jetpack;
 		}
 
@@ -79,7 +79,7 @@ export class Sites extends Component {
 		}
 
 		// nicer wording for editor routes
-		const editorRouters = [ 'page', 'post', 'edit', 'block-editor' ];
+		const editorRouters = [ 'page', 'post', 'edit', 'gutenberg' ];
 		if ( editorRouters.includes( path ) ) {
 			return i18n.translate( 'Select a site to start writing' );
 		}

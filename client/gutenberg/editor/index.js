@@ -14,34 +14,20 @@ import { makeLayout, render as clientRender } from 'controller';
 
 export default function() {
 	if ( config.isEnabled( 'gutenberg' ) ) {
-		page( '/block-editor', '/block-editor/post' );
+		page( '/gutenberg', '/gutenberg/post' );
 
-		page( '/block-editor/post', siteSelection, sites, makeLayout, clientRender );
-		page(
-			'/block-editor/post/:site/:post?',
-			siteSelection,
-			redirect,
-			post,
-			makeLayout,
-			clientRender
-		);
-		page( '/block-editor/post/:site?', siteSelection, redirect, makeLayout, clientRender );
+		page( '/gutenberg/post', siteSelection, sites, makeLayout, clientRender );
+		page( '/gutenberg/post/:site/:post?', siteSelection, redirect, post, makeLayout, clientRender );
+		page( '/gutenberg/post/:site?', siteSelection, redirect, makeLayout, clientRender );
 
-		page( '/block-editor/page', siteSelection, sites, makeLayout, clientRender );
-		page(
-			'/block-editor/page/:site/:post?',
-			siteSelection,
-			redirect,
-			post,
-			makeLayout,
-			clientRender
-		);
-		page( '/block-editor/page/:site?', siteSelection, redirect, makeLayout, clientRender );
+		page( '/gutenberg/page', siteSelection, sites, makeLayout, clientRender );
+		page( '/gutenberg/page/:site/:post?', siteSelection, redirect, post, makeLayout, clientRender );
+		page( '/gutenberg/page/:site?', siteSelection, redirect, makeLayout, clientRender );
 
 		if ( config.isEnabled( 'manage/custom-post-types' ) ) {
-			page( '/block-editor/edit/:customPostType', siteSelection, sites, makeLayout, clientRender );
+			page( '/gutenberg/edit/:customPostType', siteSelection, sites, makeLayout, clientRender );
 			page(
-				'/block-editor/edit/:customPostType/:site/:post?',
+				'/gutenberg/edit/:customPostType/:site/:post?',
 				siteSelection,
 				redirect,
 				post,
@@ -49,7 +35,7 @@ export default function() {
 				clientRender
 			);
 			page(
-				'/block-editor/edit/:customPostType/:site?',
+				'/gutenberg/edit/:customPostType/:site?',
 				siteSelection,
 				redirect,
 				makeLayout,
@@ -57,7 +43,7 @@ export default function() {
 			);
 		}
 	} else {
-		page( '/block-editor', '/post' );
-		page( '/block-editor/*', '/post' );
+		page( '/gutenberg', '/post' );
+		page( '/gutenberg/*', '/post' );
 	}
 }

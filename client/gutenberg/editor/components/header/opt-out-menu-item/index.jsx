@@ -41,7 +41,7 @@ export class OptOutMenuItem extends Component {
 			siteId,
 		} = this.props;
 
-		let classicEditorRoute = '/' + replace( currentRoute, '/block-editor/', '' );
+		let classicEditorRoute = '/' + replace( currentRoute, '/gutenberg/', '' );
 		if ( isDraft && isDirty ) {
 			savePost( { isPreview: true } );
 			classicEditorRoute += '/' + postId;
