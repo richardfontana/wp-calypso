@@ -17,7 +17,7 @@ export const siteStyleOptions = {
 				}
 			),
 			id: 'default',
-			label: 'Radcliffe Perfect',
+			label: 'Classic',
 			theme: 'pub/radcliffe-2',
 			font: {
 				name: 'Crimson Text',
@@ -33,7 +33,7 @@ export const siteStyleOptions = {
 				}
 			),
 			id: 'modern',
-			label: 'Modern Bauhaus',
+			label: 'Modern',
 			theme: 'pub/radcliffe-2',
 			font: {
 				name: 'Work Sans',
@@ -48,7 +48,7 @@ export const siteStyleOptions = {
 				}
 			),
 			id: 'vintage',
-			label: 'Vintage Paper',
+			label: 'Vintage',
 			theme: 'pub/radcliffe-2',
 			font: {
 				name: 'Libre Baskerville',
@@ -63,7 +63,7 @@ export const siteStyleOptions = {
 				}
 			),
 			id: 'colorful',
-			label: 'Upbeat Pop',
+			label: 'Upbeat',
 			theme: 'pub/radcliffe-2',
 			font: {
 				name: 'Alegreya Sans',
