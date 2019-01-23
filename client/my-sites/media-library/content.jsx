@@ -10,7 +10,6 @@ import { groupBy, head, isEmpty, map, noop, size, values } from 'lodash';
 import PropTypes from 'prop-types';
 import page from 'page';
 import { localize } from 'i18n-calypso';
-import Gridicon from 'gridicons';
 
 /**
  * Internal dependencies
@@ -214,7 +213,7 @@ class MediaLibraryContent extends React.Component {
 		return (
 			<div className="media-library__connect-message">
 				<p>
-					<Gridicon icon="image" size={ 72 } />
+					<img src="/calypso/images/sharing/google-photos-logo.svg" width="96" height="96" alt="" />
 				</p>
 				<p>{ connectMessage }</p>
 
