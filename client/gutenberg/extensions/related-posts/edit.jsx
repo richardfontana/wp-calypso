@@ -43,18 +43,20 @@ function PlaceholderPostEdit( props ) {
 					</span>
 				</Button>
 			) }
-			<h4>
+			<h3>
 				<Button className={ `${ previewClassName }-post-link` } isLink>
 					{ __( 'Related Posts will only display when you have 10 public posts' ) }
 				</Button>
-			</h4>
+			</h3>
 			{ props.displayDate && (
-				<span className={ `${ previewClassName }-post-date has-small-font-size` }>
+				<div className={ `${ previewClassName }-post-date has-small-font-size` }>
 					{ __( 'August 3, 2018' ) }
-				</span>
+				</div>
 			) }
 			{ props.displayContext && (
-				<p className={ `${ previewClassName }-post-context` }>{ __( 'In "Uncategorized"' ) }</p>
+				<div className={ `${ previewClassName }-post-context has-small-font-size` }>
+					{ __( 'In “Uncategorized”' ) }
+				</div>
 			) }
 		</div>
 	);
@@ -70,18 +72,20 @@ function RelatedPostsEditItem( props ) {
 					<img src={ props.post.img.src } alt={ props.post.title } />
 				</Button>
 			) }
-			<h4>
+			<h3>
 				<Button className={ `${ previewClassName }-post-link` } isLink>
 					{ props.post.title }
 				</Button>
-			</h4>
+			</h3>
 			{ props.displayDate && (
-				<span className={ `${ previewClassName }-post-date has-small-font-size` }>
+				<div className={ `${ previewClassName }-post-date has-small-font-size` }>
 					{ props.post.date }
-				</span>
+				</div>
 			) }
 			{ props.displayContext && (
-				<p className={ `${ previewClassName }-post-context` }>{ props.post.context }</p>
+				<div className={ `${ previewClassName }-post-context has-small-font-size` }>
+					{ props.post.context }
+				</div>
 			) }
 		</div>
 	);

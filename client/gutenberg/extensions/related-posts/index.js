@@ -12,8 +12,6 @@ import './style.scss';
 import edit from './edit';
 import { __ } from 'gutenberg/extensions/presets/jetpack/utils/i18n';
 
-export const MAX_POSTS_TO_SHOW = 6;
-
 export const name = 'related-posts';
 
 export const settings = {
@@ -50,7 +48,7 @@ export const settings = {
 		},
 		postsToShow: {
 			type: 'number',
-			default: MAX_POSTS_TO_SHOW,
+			default: 3,
 		},
 	},
 
