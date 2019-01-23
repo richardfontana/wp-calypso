@@ -208,7 +208,7 @@ class MediaLibraryContent extends React.Component {
 
 	renderGooglePhotosConnect() {
 		const connectMessage = this.props.translate(
-			'To show Photos from Google, you need to connect your Google account.'
+			'To show your Google Photos library you need to connect your Google account.'
 		);
 
 		return (
