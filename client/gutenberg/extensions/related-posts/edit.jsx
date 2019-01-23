@@ -3,17 +3,8 @@
 /**
  * External dependencies
  */
-import classNames from 'classnames';
 import { BlockControls, InspectorControls } from '@wordpress/editor';
-import {
-	Button,
-	PanelBody,
-	RangeControl,
-	ToggleControl,
-	Toolbar,
-	Path,
-	SVG,
-} from '@wordpress/components';
+import { PanelBody, RangeControl, ToggleControl, Toolbar, Path, SVG } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { get } from 'lodash';
 import { withSelect } from '@wordpress/data';
@@ -26,35 +17,32 @@ import { __ } from 'gutenberg/extensions/presets/jetpack/utils/i18n';
 export const MAX_POSTS_TO_SHOW = 6;
 
 function PlaceholderPostEdit( props ) {
-	const previewClassName = 'related-posts__preview';
-
 	return (
-		<div className={ `${ previewClassName }-post` }>
-			{ props.displayThumbnails && (
-				<Button className={ `${ previewClassName }-post-image-placeholder` } isLink>
-					<span
-						className={ `${ previewClassName }-post-image-placeholder-icon` }
-						aria-label={ __( 'Placeholder image' ) }
-					>
-						<SVG xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-							<Path fill="none" d="M0 0h24v24H0V0z" />
-							<Path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z" />
-						</SVG>
-					</span>
-				</Button>
-			) }
-			<h3>
-				<Button className={ `${ previewClassName }-post-link` } isLink>
+		<div className="jp-related-posts-i2__post">
+			<h3 className="jp-related-posts-i2__post-heading">
+				<a className="jp-related-posts-i2__post-link" href={ window.location.href }>
 					{ __( 'Related Posts will only display when you have 10 public posts' ) }
-				</Button>
+				</a>
 			</h3>
+			{ props.displayThumbnails && (
+				<figure
+					className="jp-related-posts-i2__post-image-placeholder-icon"
+					aria-label={ __( 'Placeholder image' ) }
+				>
+					<SVG xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+						<Path fill="none" d="M0 0h24v24H0V0z" />
+						<Path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z" />
+					</SVG>
+				</figure>
+			) }
+
 			{ props.displayDate && (
-				<div className={ `${ previewClassName }-post-date has-small-font-size` }>
+				<div className="jp-related-posts-i2__post-date has-small-font-size">
 					{ __( 'August 3, 2018' ) }
 				</div>
 			) }
 			{ props.displayContext && (
-				<div className={ `${ previewClassName }-post-context has-small-font-size` }>
+				<div className="jp-related-posts-i2__post-context has-small-font-size">
 					{ __( 'In “Uncategorized”' ) }
 				</div>
 			) }
@@ -63,27 +51,29 @@ function PlaceholderPostEdit( props ) {
 }
 
 function RelatedPostsEditItem( props ) {
-	const previewClassName = 'related-posts__preview';
-
 	return (
-		<div className={ `${ previewClassName }-post` }>
-			{ props.displayThumbnails && props.post.img && props.post.img.src && (
-				<Button className={ `${ previewClassName }-post-link` } isLink>
-					<img src={ props.post.img.src } alt={ props.post.title } />
-				</Button>
-			) }
-			<h3>
-				<Button className={ `${ previewClassName }-post-link` } isLink>
+		<div className="jp-related-posts-i2__post">
+			<h3 className="jp-related-posts-i2__post-heading">
+				<a className="jp-related-posts-i2__post-link" href={ props.post.url }>
 					{ props.post.title }
-				</Button>
+				</a>
 			</h3>
+			{ props.displayThumbnails && props.post.img && props.post.img.src && (
+				<a className="jp-related-posts-i2__post-img-link" href={ props.post.url }>
+					<img
+						className="jp-related-posts-i2__post-img"
+						src={ props.post.img.src }
+						alt={ props.post.title }
+					/>
+				</a>
+			) }
 			{ props.displayDate && (
-				<div className={ `${ previewClassName }-post-date has-small-font-size` }>
+				<div className="jp-related-posts-i2__post-date has-small-font-size">
 					{ props.post.date }
 				</div>
 			) }
 			{ props.displayContext && (
-				<div className={ `${ previewClassName }-post-context has-small-font-size` }>
+				<div className="jp-related-posts-i2__post-context has-small-font-size">
 					{ props.post.context }
 				</div>
 			) }
@@ -92,7 +82,7 @@ function RelatedPostsEditItem( props ) {
 }
 
 function RelatedPostsPreviewRows( props ) {
-	const className = 'related-posts__row';
+	const className = 'jp-related-posts-i2__row';
 
 	let topRowEnd = [];
 	let bottomRowStart = [];
@@ -119,10 +109,14 @@ function RelatedPostsPreviewRows( props ) {
 	}
 
 	return (
-		<div className={ className }>
-			<div className={ className + '-upper' }>{ props.posts.slice( 0, topRowEnd ) }</div>
+		<div>
+			<div className={ className } data-post-count={ props.posts.slice( 0, topRowEnd ).length }>
+				{ props.posts.slice( 0, topRowEnd ) }
+			</div>
 			{ displayLowerRow && (
-				<div className={ className + '-lower' }>{ props.posts.slice( bottomRowStart ) }</div>
+				<div className={ className } data-post-count={ props.posts.slice( bottomRowStart ).length }>
+					{ props.posts.slice( bottomRowStart ) }
+				</div>
 			) }
 		</div>
 	);
@@ -156,7 +150,7 @@ class RelatedPostsEdit extends Component {
 		// Also, if the site does not have sufficient posts to display related ones
 		// (minimum 10 posts), we also use this code block to fill in the
 		// placeholders.
-		const previewClassName = 'related-posts__preview';
+		const previewClassName = 'jp-relatedposts-i2';
 		const displayPosts = [];
 		for ( let i = 0; i < postsToShow; i++ ) {
 			if ( posts[ i ] ) {
@@ -216,13 +210,8 @@ class RelatedPostsEdit extends Component {
 					<Toolbar controls={ layoutControls } />
 				</BlockControls>
 
-				<div
-					className={ classNames( className, {
-						'is-grid': postLayout === 'grid',
-						[ `columns-${ postsToShow }` ]: postLayout === 'grid',
-					} ) }
-				>
-					<div className={ previewClassName }>
+				<div className={ className }>
+					<div className={ previewClassName } data-layout={ postLayout }>
 						<RelatedPostsPreviewRows posts={ displayPosts } />
 					</div>
 				</div>
