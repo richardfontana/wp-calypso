@@ -20,9 +20,7 @@ function PlaceholderPostEdit( props ) {
 	return (
 		<div className="jp-related-posts-i2__post">
 			<h3 className="jp-related-posts-i2__post-heading">
-				<a className="jp-related-posts-i2__post-link" href={ window.location.href }>
-					{ __( 'Related Posts will only display when you have 10 public posts' ) }
-				</a>
+				{ __( 'Related Posts will only display when you have 10 public posts' ) }
 			</h3>
 			{ props.displayThumbnails && (
 				<figure
