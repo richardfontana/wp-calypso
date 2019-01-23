@@ -82,8 +82,8 @@ function RelatedPostsEditItem( props ) {
 function RelatedPostsPreviewRows( props ) {
 	const className = 'jp-related-posts-i2__row';
 
-	let topRowEnd = [];
-	let bottomRowStart = [];
+	let topRowEnd = 0;
+	let bottomRowStart = 0;
 	const displayLowerRow = props.posts.length > 3;
 
 	switch ( props.posts.length ) {
